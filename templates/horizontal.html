@@ -1,0 +1,441 @@
+<!-- FRONTEND CODE FOR THE FIRST PROTOTYPES - HORIZONTAL LAYOUT VERSION  -->
+
+<!-- RUNS WITH version1.py ONLY  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Summary</title>
+
+    <!-- Setting the basic styles for the application content-->
+
+    <style>
+        body {  /* Setting style for the main body */
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Styles for the main container */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        /* Styles for the upload section */
+
+        .upload-section {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles for the main heading on top */
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Styles for the summary container */
+
+        .video-summary-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+         /* Styles for the lefthand side container below upload section */
+        /* Contains videoplayer and summarise button */
+
+        .left-section {
+            width: 70%;
+            padding-right: 20px;
+        }
+
+         /* Styles for the righthand side container below upload section */
+        /* Contains summary paragraph with remaining buttons for controlling playback */
+
+        .right-section {
+            width: 30%;
+            padding-left: 20px;
+            padding-right: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles for the videoplayer */
+
+        video {
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+         /* Styles for the button container */
+
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+         /* Styles for the icon container */
+
+        .icon-container {
+            display: inline-block;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin: 0 5px;
+            text-align: center;
+        }
+
+         /* Styles for the icon container in hover state*/
+
+        .icon-container:hover {
+            transform: scale(1.1);
+        }
+
+        /* Styles for the icons */
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+
+        /* Styles for the icon texts */
+
+        .icon-text {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+         /* Styles for the summary generation container */
+
+        .summary-container {
+            margin-top: 20px;
+        }
+
+         /* Styles for the summary paragraph */
+
+        .summary {
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 18px; 
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+         /* Styles for the tooltip */
+
+        .tooltip {
+            position: relative;
+            display: inline;
+            cursor: pointer;
+            color: #e399b8;
+            font-size: 18px; 
+        }
+
+         /* Styles for the tooltip text in hidden state */
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #fff;
+            color: #000;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            z-index: 1;
+            top: 125%; 
+            left: 50%; 
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 16px; 
+        }
+
+         /* Styles for the tooltip text in hover state*/
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+         /* Styles for the tooltip images */
+
+        .tooltip img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        /* Styles for the image description inside the tooltip */
+
+        .tooltip-description {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+         /* Responsiveness for screens up to 1024px wide */
+
+        @media (max-width: 1024px) {
+            .video-summary-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-section, .right-section {
+                width: 100%;
+                padding: 0;
+                margin-top: 20px;
+            }
+        }
+
+         /* Hiding the transcript for the main run */
+
+        .transcript-paragraph{
+            display: none;
+        }
+
+         /* Responsiveness for screens up to 768px wide */
+
+        @media (max-width: 768px) {
+            button {
+                padding: 10px 20px; 
+                font-size: 14px;
+            }
+            .icon-container {
+                padding: 8px;
+                margin: 10px;
+            }
+            .icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+    <script>
+        let audio = null;
+        let isPaused = false;
+        let pausedTime = 0;
+
+        /* fetches an image URL based on a given word and sets it as 
+        the source of an image element and handles potential errors */
+
+        function getAndSetImage(word, imgElement, descriptionElement) {
+            var apiUrl = `/get_image_url?word=${word}`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    var imageUrl = data.image_url;
+                    var description = data.description;
+                    if (imageUrl) {
+                        imgElement.src = imageUrl;
+                        imgElement.alt = word;
+                        descriptionElement.textContent = description; // Set description text
+                        console.log(`Image URL for word '${word}': ${imageUrl}`);
+                    } else {
+                        console.error(`No image found for word '${word}'`);
+                        imgElement.alt = "No image available";
+                    }
+                })
+                .catch(error => console.error('Error fetching image:', error));
+        }
+
+        /* sends a transcript for summarization and displays the summary with tooltips
+        showing word meanings and images on hover */
+
+        function summarise() {
+            var transcript = document.getElementById("transcript").textContent;
+            var formData = new FormData();
+            formData.append('transcript', transcript);
+
+            fetch('/summarise', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("summaryContainer").style.display = 'block';
+                var summaryText = data.summary;
+                var wordsWithMeanings = data.words_with_meanings;
+                for (var word in wordsWithMeanings) {
+                    var meaning = wordsWithMeanings[word];
+                    var regex = new RegExp(`\\b${word}\\b`, 'g');
+                    summaryText = summaryText.replace(regex, `
+                        <span class="tooltip" onmouseover="getAndSetImage('${word}', this.querySelector('.tooltip-image'), this.querySelector('.tooltip-description'))">
+                            ${word}
+                            <span class="tooltiptext">
+                                Meaning: ${meaning}<br>
+                                <img src="" alt="${word}" class="tooltip-image"><br>
+                                <div class="tooltip-description"></div>
+                            </span>
+                        </span>
+                    `);
+                }
+                document.getElementById("summaryText").innerHTML = summaryText;
+                document.getElementById("audioButtons").style.display = 'flex'; // Show the audio buttons
+            })
+            .catch(error => console.error('Error summarising:', error));
+        }
+
+        /* sends the summary text to the server to generate audio and plays the returned audio */
+
+        function readOutLoud() {
+            var summary = document.getElementById("summaryText").innerText.trim();
+            if (summary === "") {
+                console.error("No summary text to read out loud.");
+                return;
+            }
+
+            /* Pause the video if it's playing */
+
+            var video = document.querySelector("video");
+            if (video && !video.paused) {
+                video.pause();
+            }
+
+            if (audio) {
+                audio.pause();
+                audio = null;
+                isPaused = false;
+                pausedTime = 0;
+            }
+
+            var speed = 0.3;   /* Manually set for ease of user testing */
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/read_out_loud", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        audio = new Audio(response.audio_url);
+                        audio.play();
+                        console.log("Text read out loud successfully.");
+                    } else {
+                        console.error("Error in read out loud:", response.error);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "summary": summary, "speed": speed }));
+        }
+
+        /* pauses the audio playback of the summary if it is currently playing */
+
+        function pauseAudio() {
+            if (audio && !audio.paused) {
+                audio.pause();
+                pausedTime = audio.currentTime;  /* saving the current playback time */
+                isPaused = true;
+                console.log("Audio paused successfully.");
+            } else {
+                console.error("No audio to pause.");
+            }
+        }
+
+        /* resumes audio playback of the summary from the paused timestamp if the audio
+        was previously paused */
+
+        function resumeAudio() {
+            if (isPaused && audio) {
+                var video = document.querySelector("video");
+                if (video && !video.paused) {
+                    video.pause();  /* pauses the playing video if playing */
+                }
+                audio.currentTime = pausedTime;
+                audio.play();
+                isPaused = false;
+                console.log("Audio resumed successfully.");
+            } else {
+                console.error("No audio to resume or audio is not paused.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="upload-section">
+            <h1>Upload Video</h1>
+            <form id="uploadForm" action="/upload_video" method="post" enctype="multipart/form-data">
+                <div class="form-buttons">
+                    <div class="icon-container">
+                        <input type="file" name="video_file" accept="video/mp4" style="display: none;" id="fileInput">
+                        <img src="/static/choose.png" alt="Choose Video" class="icon" onclick="document.getElementById('fileInput').click()">
+                        <div class="icon-text">Choose Video</div>
+                    </div>
+                    <div class="icon-container">
+                        <img src="/static/upload.png" alt="Upload" class="icon" onclick="document.getElementById('uploadForm').submit()">
+                        <div class="icon-text">Upload</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="video-summary-container">
+            <div class="left-section">
+                {% if video_url %}
+                <video controls>
+                    <source src="{{ video_url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="button-container">
+                    <div class="icon-container" onclick="summarise()">
+                        <img src="/static/summary.png" alt="Summarise" class="icon">
+                        <div class="icon-text">Summarise</div> 
+                    </div>
+                </div>
+                {% if transcript %}
+                <p id="transcript" class="transcript-paragraph">{{ transcript }}</p>
+                {% endif %}
+                {% endif %}
+            </div>
+            <div class="right-section">
+                <div id="summaryContainer" class="summary-container" style="display: none;">
+                    <h2>Summary:</h2>
+                    <p id="summaryText"></p>
+                </div>
+                <div id="audioButtons" style="display: none; margin-top: 20px;">
+                    <div class="icon-container">
+                        <img src="/static/loop.png" alt="Read Out Loud" class="icon" onclick="readOutLoud()">
+                        <div class="icon-text">Start Playing /<br> Start From Beginning</div>
+                    </div>
+                    <div class="icon-container">
+                        <img src="/static/pause.png" alt="Pause" class="icon" onclick="pauseAudio()">
+                        <div class="icon-text">Pause</div>
+                    </div>
+                    <div class="icon-container">
+                        <img src="/static/resume.png" alt="Resume" class="icon" onclick="resumeAudio()">
+                        <div class="icon-text">Resume Playing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

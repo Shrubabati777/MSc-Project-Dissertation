@@ -1,0 +1,478 @@
+<!-- FRONTEND CODE FOR THE FIRST PROTOTYPES - VERTICAL LAYOUT VERSION  -->
+
+<!-- RUNS WITH version1.py ONLY  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Summary</title>
+
+    <!-- Setting the basic styles for the application content-->
+
+    <style>
+        body {    /* Setting style for the main body */
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+         /* Styles for the main container */
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            text-align: center;
+        }
+
+         /* Styles for the main heading on top */
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+         /* Styles for the videoplayer container */
+
+        video {
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+         /* Styles for the summary generation container */
+
+        .summary-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles for the summary text */
+
+        .summary {
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 18px; 
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+         /* Styles for the basic tooltip design */
+
+        .tooltip {
+            position: relative;
+            display: inline;
+            cursor: pointer;
+            color: #e399b8;
+            font-size: 18px; 
+        }
+
+         /* Styles for the tooltip text in hidden state */
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #fff;
+            color: #000;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            z-index: 1;
+            top: 125%; 
+            left: 50%; 
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 16px; 
+        }
+
+         /* Styles for the tooltip text in hover state */
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+         /* Styles for the tooltip image */
+
+        .tooltip img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+         /* Styles for the image descriptions inside tooltip */
+
+        .tooltip-description {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+         /* Styles for the buttons */
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #e399b8;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            font-size: 18px; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles for the buttons in hover state */
+
+        button:hover {
+            background-color: #d188a1;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Styles for the in-form buttons */
+        
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Hiding the transcript for the main run */
+        .transcript-paragraph{
+            display: none;
+        }
+
+        /* Styles for the icon container */
+
+        .icon-container {
+            display: inline-block;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin: 0 15px; /* Increased space between buttons */
+            text-align: center;
+        }
+
+        /* Styles for the icon container in hover state */
+
+        .icon-container:hover {
+            transform: scale(1.2);
+        }
+
+        /* Styles for the icons */
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+
+         /* Styles for the icon text */
+
+        .icon-text {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+         /* Responsiveness for screens up to 1024px wide */
+
+        @media (max-width: 1024px) {
+            .container {
+                margin-top: 20px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            video {
+                margin-top: 15px;
+            }
+            .summary-container {
+                margin-top: 15px;
+                padding: 15px;
+            }
+            .summary {
+                margin-top: 15px;
+                padding: 8px;
+                font-size: 16px;
+            }
+            .tooltip {
+                font-size: 16px; 
+            }
+            .tooltip .tooltiptext {
+                width: 250px;
+                top: 110%;
+                margin-left: -125px;
+                font-size: 14px; 
+            }
+            button {
+                padding: 12px 25px; 
+                font-size: 16px; 
+            }
+        }
+
+        /* Responsiveness for screens up to 768px wide */
+
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 10px;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.2em;
+            }
+            video {
+                margin-top: 10px;
+            }
+            .summary-container {
+                margin-top: 10px;
+                padding: 10px;
+            }
+            .summary {
+                margin-top: 10px;
+                padding: 6px;
+                font-size: 14px; 
+            }
+            .tooltip {
+                font-size: 14px;
+            }
+            .tooltip .tooltiptext {
+                width: 200px;
+                top: 100%;
+                margin-left: -100px;
+                font-size: 12px; 
+            }
+            button {
+                padding: 10px 20px; 
+                font-size: 14px;
+            }
+            .icon-container {
+                padding: 8px;
+            }
+            .icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+    <script>
+        let audio = null;
+        let isPaused = false;
+        let pausedTime = 0;
+
+        /* fetches an image URL based on a given word and sets it as 
+        the source of an image element and handles potential errors */
+
+        function getAndSetImage(word, imgElement, descriptionElement) {
+            var apiUrl = `/get_image_url?word=${word}`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    var imageUrl = data.image_url;
+                    var description = data.description;
+                    if (imageUrl) {
+                        imgElement.src = imageUrl;
+                        imgElement.alt = word;
+                        descriptionElement.textContent = description; // Set description text
+                        console.log(`Image URL for word '${word}': ${imageUrl}`);
+                    } else {
+                        console.error(`No image found for word '${word}'`);
+                        imgElement.alt = "No image available";
+                    }
+                })
+                .catch(error => console.error('Error fetching image:', error));
+        }
+
+        /* sends a transcript for summarization and displays the summary with tooltips
+        showing word meanings and images on hover */
+
+        function summarise() {
+            var transcript = document.getElementById("transcript").textContent;
+            var formData = new FormData();
+            formData.append('transcript', transcript);
+
+            fetch('/summarise', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("summaryContainer").style.display = 'block';
+                var summaryText = data.summary;
+                var wordsWithMeanings = data.words_with_meanings;
+                for (var word in wordsWithMeanings) {
+                    var meaning = wordsWithMeanings[word];
+                    var regex = new RegExp(`\\b${word}\\b`, 'g');
+                    summaryText = summaryText.replace(regex, `
+                        <span class="tooltip" onmouseover="getAndSetImage('${word}', this.querySelector('.tooltip-image'), this.querySelector('.tooltip-description'))">
+                            ${word}
+                            <span class="tooltiptext">
+                                Meaning: ${meaning}<br>
+                                <img src="" alt="${word}" class="tooltip-image"><br>
+                                <div class="tooltip-description"></div>
+                            </span>
+                        </span>
+                    `);
+                }
+                document.getElementById("summaryText").innerHTML = summaryText;
+            })
+            .catch(error => console.error('Error summarising:', error));
+        }
+
+        /* sends the summary text to the server to generate audio and plays the returned audio */
+
+        function readOutLoud() {
+            var summary = document.getElementById("summaryText").innerText.trim();
+            if (summary === "") {
+                console.error("No summary text to read out loud.");
+                return;
+            }
+
+            /* Pause the video if it's playing */
+
+            var video = document.querySelector("video");
+            if (video && !video.paused) {
+                video.pause();
+            }
+
+            if (audio) {
+                audio.pause();
+                audio = null;
+                isPaused = false;
+                pausedTime = 0;
+            }
+
+            var speed = 0.3;  /* Manually set for ease of user testing */
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/read_out_loud", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        audio = new Audio(response.audio_url);
+                        audio.play();
+                        console.log("Text read out loud successfully.");
+                    } else {
+                        console.error("Error in read out loud:", response.error);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "summary": summary, "speed": speed }));
+        }
+
+        /* pauses the audio playback of the summary if it is currently playing */
+
+        function pauseAudio() {
+            if (audio && !audio.paused) {
+                audio.pause();
+                pausedTime = audio.currentTime;  /* saving the current playback time */
+                isPaused = true;
+                console.log("Audio paused successfully.");
+            } else {
+                console.error("No audio to pause.");
+            }
+        }
+
+        /* resumes audio playback of the summary from the paused timestamp if the audio
+        was previously paused */
+
+        function resumeAudio() {
+            if (isPaused && audio) {
+                var video = document.querySelector("video");
+                if (video && !video.paused) {
+                    video.pause();   /* pauses the playing video if playing */
+                }
+                audio.currentTime = pausedTime;
+                audio.play();
+                isPaused = false;
+                console.log("Audio resumed successfully.");
+            } else {
+                console.error("No audio to resume or audio is not paused.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Video</h1>
+        <form id="uploadForm" action="/upload_video" method="post" enctype="multipart/form-data">
+            <div class="form-buttons">
+                <div class="icon-container">
+                    <input type="file" name="video_file" accept="video/mp4" style="display: none;" id="fileInput">
+                    <img src="/static/choose.png" alt="Choose Video" class="icon" onclick="document.getElementById('fileInput').click()">
+                    <div class="icon-text">Choose Video</div>
+                </div>
+                <div class="icon-container">
+                    <img src="/static/upload.png" alt="Upload" class="icon" onclick="document.getElementById('uploadForm').submit()">
+                    <div class="icon-text">Upload</div>
+                </div>
+            </div>
+        </form>
+        {% if video_url %}
+        <hr>
+        <video controls>
+            <source src="{{ video_url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="button-container">
+            <div class="icon-container" onclick="summarise()">
+                <img src="/static/summary.png" alt="Summarise" class="icon">
+                <div class="icon-text">Summarise</div>
+            </div>
+        </div>
+        {% if transcript %}
+        <p id="transcript" class="transcript-paragraph">{{ transcript }}</p>
+        {% endif %}
+        <div id="summaryContainer" style="display: none;">
+            <hr>
+            <div class="summary">
+                <h2>Summary:</h2>
+                <p id="summaryText"></p>
+                <div class="icon-container">
+                    <img src="/static/loop.png" alt="Read Out Loud" class="icon" onclick="readOutLoud()">
+                    <div class="icon-text">Start Playing / Start From Beginning</div>
+                </div>
+                <div class="icon-container">
+                    <img src="/static/pause.png" alt="Pause" class="icon" onclick="pauseAudio()">
+                    <div class="icon-text">Pause</div>
+                </div>
+                <div class="icon-container">
+                    <img src="/static/resume.png" alt="Resume" class="icon" onclick="resumeAudio()">
+                    <div class="icon-text">Resume Playing</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html> 
