@@ -46,6 +46,7 @@ The aim is to address challenges like ephemeral screen-time of subtitles, misint
 1. **Choose a Video:**
    - Click the "Choose Video" button to select a video file (`vid1.mp4` or `vid2.mp4`) from your device.
    - Click the "Upload" button to load the video into the application.
+   - While running the python code, refer to the original video transcript returned to the terminal (optional).
 
 2. **Summarization:**
    - After uploading, click the "Summarise" button. It is recommended to do this before starting the video to reduce waiting time.
