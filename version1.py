@@ -125,6 +125,10 @@ def process_video(video_filename):
     transcriber = aai.Transcriber()
     transcript = transcriber.transcribe(audio_path)
     text = transcript.text
+
+    # print transcript text to terminal
+
+    print("Transcript:", text)
     
     return render_template('horizontal.html', transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))   # change file name to 'vertical.html' for running with vertical layout frontend code
 
