@@ -149,6 +149,10 @@ def process_video(video_filename):
     transcriber = aai.Transcriber()
     transcript = transcriber.transcribe(audio_path)
     text = transcript.text
+
+    # print transcript text to terminal
+
+    print("Transcript:", text)
     
     return render_template('modified.html', transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))
 
