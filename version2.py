@@ -149,11 +149,11 @@ def process_video(video_filename):
     transcriber = aai.Transcriber()
     transcript = transcriber.transcribe(audio_path)
     text = transcript.text
-
+    
     # print transcript text to terminal
 
     print("Transcript:", text)
-    
+
     return render_template('modified.html', transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))
 
 # summarisation path, renders summary and highlighted words to HTML template
@@ -161,7 +161,7 @@ def process_video(video_filename):
 @app.route('/summarise', methods=['POST'])
 def summarise():
     transcript = request.form['transcript']
-
+    
     def summarize(text, per):
         nlp = spacy.load('en_core_web_sm')
         doc = nlp(text)
@@ -192,14 +192,68 @@ def summarise():
         final_summary = [word.text for word in summary]
         summary = ' '.join(final_summary)
         
-        summary = merge_and_remove_discover(summary)
+        summary = edit_summary(summary)
         
         return summary
     
-    def merge_and_remove_discover(text):  # manual modification to correct grammar of summary
-        text = text.replace('. And', ' and')
+    def edit_summary(text):
+    
+        nlp = spacy.load('en_core_web_sm')
+
+        # fix improper sentence ending and beginning issue involving 'and'
         
-        return text
+        text = text.replace('. And', ' and')
+        doc = nlp(text)
+    
+        sentences = list(doc.sents)
+        corrected_sentences = []
+
+        for sentence in sentences:
+            tokens = list(sentence)
+            have_found = False
+            tense = None
+            to_found = False
+
+            # find 'have' and determine the tense of the first verb after 'have'
+
+            for i, token in enumerate(tokens):
+                if token.text.lower() == 'have':
+                    have_found = True
+                elif have_found and token.pos_ == 'VERB':
+                    if token.tag_ in ['VBD', 'VBN']:  
+                        tense = 'past'
+                    else:
+                        tense = 'present'
+                    break
+
+            # if 'have' is found and past tense is determined, correct subsequent verbs before "to"
+
+            if have_found and tense:
+                corrected_tokens = []
+                for token in tokens:
+                    if token.text.lower() == 'to':
+                        to_found = True
+
+                    if token.pos_ == 'VERB' and not to_found:
+                        if tense == 'past' and token.tag_ not in ['VBD', 'VBN']:
+                            corrected_tokens.append(token.lemma_ + 'ed') 
+                        else:
+                            corrected_tokens.append(token.text)
+                    else:
+                        corrected_tokens.append(token.text)
+                corrected_sentence = ' '.join(corrected_tokens)
+            else:
+                corrected_sentence = sentence.text
+        
+            corrected_sentences.append(corrected_sentence)
+    
+        # format punctuations properly
+
+        corrected_paragraph = ' '.join(corrected_sentences)
+        corrected_paragraph = corrected_paragraph.replace(' ,', ',').replace(' .', '.')
+
+        return corrected_paragraph
+    
 
     summary = summarize(transcript, 0.03)
     words_with_meanings = {}
