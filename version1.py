@@ -1,5 +1,5 @@
 ##### THIS IS THE FIRST VERSION OF PYTHON CODE WHICH HAS BEEN DESCRIBED IN THE TECHNICAL SPECIFICATION - UNDERLYING LOGIC #####
-##### RUNS WITH vertical.html & horizontal.html, CHANGE HTML FILE NAMES IN LINES 100 AND 129 AS REQUIRED #####
+##### RUNS WITH vertical.html & horizontal.html, CHANGE HTML FILE NAMES IN LINES 100 AND 133 AS REQUIRED #####
 
 # import statements
 
@@ -97,7 +97,7 @@ def search_synonym_image(word, headers):
 
 @app.route('/')
 def index():
-    return render_template('horizontal.html')   # change file name to 'vertical.html' for running with vertical layout frontend code
+    return render_template('vertical.html')   # change file name to 'vertical.html' for running with vertical layout frontend code
 
 # video uploading path
 
@@ -130,7 +130,7 @@ def process_video(video_filename):
 
     print("Transcript:", text)
 
-    return render_template('horizontal.html', transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))   # change file name to 'vertical.html' for running with vertical layout frontend code
+    return render_template('vertical.html', transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))   # change file name to 'vertical.html' for running with vertical layout frontend code
 
 # summarisation path, renders summary and highlighted words to HTML template
 
@@ -160,7 +160,7 @@ def summarise():
             print(f"An error occurred: {e}")
             return None
 
-    def summarize(text, per):
+    def summarize(text, percentage):
         nlp = spacy.load('en_core_web_sm')
         doc = nlp(text)
         
@@ -184,7 +184,7 @@ def summarise():
                     else:
                         sentence_scores[sent] += word_frequencies[word.text.lower()]
         
-        select_length = int(len(doc) * per)
+        select_length = int(len(doc) * percentage)
         summary = nlargest(select_length, sentence_scores, key=sentence_scores.get)
         
         final_summary = [word.text for word in summary]
