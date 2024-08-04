@@ -120,6 +120,3 @@ For tablets, touch highlighted words to trigger tooltips (`version1.py`) or popu
 
 ---
 
-Feel free to reach out for any questions or support!
-```
-
