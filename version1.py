@@ -1,5 +1,5 @@
 ##### THIS IS THE FIRST VERSION OF PYTHON CODE WHICH HAS BEEN DESCRIBED IN THE TECHNICAL SPECIFICATION - UNDERLYING LOGIC #####
-##### RUNS WITH vertical.html & horizontal.html, CHANGE HTML FILE NAMES IN LINES 100 AND 133 AS REQUIRED #####
+##### RUNS WITH vertical.html & horizontal.html, CHANGE HTML FILENAME IN LINE 19 #####
 
 # import statements
 
@@ -15,6 +15,8 @@ from gtts import gTTS
 import os
 
 app = Flask(__name__)
+
+html_filename = 'vertical.html'  ### CHANGE FILENAME HERE BEFORE RUNNING FOR HORIZONTAL LAYOUT, RUN AS IT IS FOR VERTICAL LAYOUT
 
 # wav audio extraction from the mp4 video
 
@@ -97,7 +99,7 @@ def search_synonym_image(word, headers):
 
 @app.route('/')
 def index():
-    return render_template('vertical.html')   # change file name to 'vertical.html' for running with vertical layout frontend code
+    return render_template(html_filename)   
 
 # video uploading path
 
@@ -130,7 +132,7 @@ def process_video(video_filename):
 
     print("Transcript:", text)
 
-    return render_template('vertical.html', transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))   # change file name to 'vertical.html' for running with vertical layout frontend code
+    return render_template(html_filename, transcript=text, video_url=url_for('static', filename=f'uploads/Documentaries/{video_filename}'))
 
 # summarisation path, renders summary and highlighted words to HTML template
 
